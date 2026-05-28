@@ -13,6 +13,7 @@
     User currentUser = (User) session.getAttribute("currentUser");
     boolean loggedIn = currentUser != null;
     boolean isMerchant = loggedIn && "MERCHANT".equalsIgnoreCase(currentUser.getRole());
+    boolean isAdmin = loggedIn && "ADMIN".equalsIgnoreCase(currentUser.getRole());
     boolean isAdminPath = uri != null && uri.contains("/admin/");
     int cartCount = 0;
     CartSummary summary = (CartSummary) session.getAttribute("cartSummary");
@@ -63,9 +64,43 @@
                 </span>
                 订单
             </a>
+            <% if (loggedIn && !isMerchant && !isAdmin) { %>
+            <a class="nav-link<%= isActive(uri, "/recommendations") ? " active" : "" %>" href="<%= contextPath %>/recommendations">
+                <span class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"></path>
+                    </svg>
+                </span>
+                推荐
+            </a>
+            <% } %>
         </div>
         <div class="nav-actions">
-            <% if (isMerchant) { %>
+            <% if (isAdmin) { %>
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-link<%= isAdminPath ? " active" : "" %>">
+                        <span class="icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <path d="M4 6h16"></path>
+                                <path d="M4 12h16"></path>
+                                <path d="M4 18h16"></path>
+                            </svg>
+                        </span>
+                        管理后台
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="<%= contextPath %>/admin/dashboard">仪表盘</a>
+                        <a href="<%= contextPath %>/admin/users">用户管理</a>
+                        <a href="<%= contextPath %>/admin/analytics">数据分析</a>
+                        <a href="<%= contextPath %>/admin/profiles">用户画像</a>
+                        <a href="<%= contextPath %>/admin/logs">系统日志</a>
+                        <a href="<%= contextPath %>/admin/orders">订单管理</a>
+                        <a href="<%= contextPath %>/admin/products">商品管理</a>
+                        <a href="<%= contextPath %>/admin/categories">分类管理</a>
+                        <a href="<%= contextPath %>/admin/sales">销售报表</a>
+                    </div>
+                </div>
+            <% } else if (isMerchant) { %>
                 <div class="nav-dropdown">
                     <button type="button" class="nav-link<%= isAdminPath ? " active" : "" %>">
                         <span class="icon" aria-hidden="true">
@@ -80,7 +115,9 @@
                     <div class="dropdown-menu">
                         <a href="<%= contextPath %>/admin/orders">订单管理</a>
                         <a href="<%= contextPath %>/admin/products">商品管理</a>
+                        <a href="<%= contextPath %>/admin/categories">分类管理</a>
                         <a href="<%= contextPath %>/admin/sales">销售报表</a>
+                        <a href="<%= contextPath %>/admin/logs">日志查看</a>
                     </div>
                 </div>
             <% } %>

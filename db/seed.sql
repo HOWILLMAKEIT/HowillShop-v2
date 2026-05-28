@@ -14,9 +14,3 @@ VALUES
   ('娱乐/图书/鲜花', NULL, 10, 1),
   ('腕表/珠宝/眼镜', NULL, 11, 1);
 
-INSERT INTO products (category_id, merchant_id, name, price, stock, status, description, image_url)
-VALUES
-  ((SELECT id FROM categories WHERE name = '家电/手机/数码'), (SELECT id FROM users WHERE username = 'admin'), 'Bluetooth Headphones', 199.00, 100, 1, 'Wireless over-ear headphones.', 'images/headphones.jpg'),
-  ((SELECT id FROM categories WHERE name = '电脑/办公/文具'), (SELECT id FROM users WHERE username = 'admin'), 'Lightweight Laptop 14', 3999.00, 50, 1, '14-inch portable laptop.', 'images/laptop14.jpg'),
-  ((SELECT id FROM categories WHERE name = '娱乐/图书/鲜花'), (SELECT id FROM users WHERE username = 'admin'), 'Programming Basics', 59.00, 200, 1, 'Beginner friendly programming book.', 'images/book1.jpg'),
-  ((SELECT id FROM categories WHERE name = '娱乐/图书/鲜花'), (SELECT id FROM users WHERE username = 'admin'), 'Sci-Fi Novel', 45.00, 150, 1, 'Classic science fiction novel.', 'images/book2.jpg');

@@ -5,7 +5,10 @@ import com.javaweb.shop.dao.ProductDao;
 import com.javaweb.shop.infra.db.DataSourceFactory;
 import com.javaweb.shop.model.Category;
 import com.javaweb.shop.model.Product;
+import com.javaweb.shop.model.User;
+import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.OssService;
+import com.javaweb.shop.service.RecommendationService;
 import com.javaweb.shop.service.ValidationException;
 
 import javax.servlet.ServletException;
@@ -15,18 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
 // 商品列表与详情入口
 public class ProductServlet extends HttpServlet {
     private ProductDao productDao;
     private CategoryDao categoryDao;
+    private LogService logService;
+    private RecommendationService recommendationService;
     private static final int PAGE_SIZE = 12;
 
     @Override
     public void init() {
         this.productDao = new ProductDao(DataSourceFactory.getDataSource());
         this.categoryDao = new CategoryDao(DataSourceFactory.getDataSource());
+        this.logService = new LogService(DataSourceFactory.getDataSource());
+        this.recommendationService = new RecommendationService(DataSourceFactory.getDataSource());
     }
 
     @Override
@@ -81,7 +89,23 @@ public class ProductServlet extends HttpServlet {
             throw new ValidationException("商品不存在。");
         }
         signProductImage(product.get());
+        // 数据采集：记录浏览日志（未登录用户 userId 为 null）
+        Long userId = null;
+        Object currentUser = request.getSession(false) != null
+                ? request.getSession(false).getAttribute("currentUser") : null;
+        if (currentUser instanceof User) {
+            userId = ((User) currentUser).getId();
+        }
+        logService.logBrowse(userId, productId, product.get().getCategoryId(), 0);
         request.setAttribute("product", product.get());
+        // "浏览过此商品的人也买了"推荐
+        try {
+            List<Product> related = recommendationService.getRelatedProducts(productId, 4);
+            if (related != null && !related.isEmpty()) {
+                signProductImages(related);
+                request.setAttribute("relatedProducts", related);
+            }
+        } catch (SQLException ignored) {}
         request.getRequestDispatcher("/product_detail.jsp").forward(request, response);
     }
 
@@ -154,21 +178,6 @@ public class ProductServlet extends HttpServlet {
     }
 
     private void signProductImage(Product product) {
-        if (product == null) {
-            return;
-        }
-        String imageUrl = product.getImageUrl();
-        if (imageUrl == null || imageUrl.isBlank()) {
-            return;
-        }
-        try {
-            OssService ossService = new OssService();
-            String signed = ossService.signUrl(imageUrl);
-            if (signed != null && !signed.isBlank()) {
-                product.setImageUrl(signed);
-            }
-        } catch (ValidationException ex) {
-            // OSS 配置缺失时保留原地址
-        }
+        signProductImages(Collections.singletonList(product));
     }
 }

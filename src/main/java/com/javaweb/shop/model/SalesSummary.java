@@ -8,6 +8,8 @@ public class SalesSummary {
     private LocalDate saleDate;
     private long orderCount;
     private BigDecimal totalAmount;
+    private String payStatus;
+    private String shipStatus;
 
     public LocalDate getSaleDate() {
         return saleDate;
@@ -31,5 +33,21 @@ public class SalesSummary {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public String getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(String payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public String getShipStatus() {
+        return shipStatus;
+    }
+
+    public void setShipStatus(String shipStatus) {
+        this.shipStatus = shipStatus;
     }
 }

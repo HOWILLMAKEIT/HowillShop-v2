@@ -6,6 +6,7 @@ import com.javaweb.shop.infra.db.DataSourceFactory;
 import com.javaweb.shop.model.Category;
 import com.javaweb.shop.model.Product;
 import com.javaweb.shop.model.User;
+import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.OssService;
 import com.javaweb.shop.service.ValidationException;
 
@@ -27,11 +28,13 @@ import java.util.Optional;
 public class AdminProductServlet extends HttpServlet {
     private ProductDao productDao;
     private CategoryDao categoryDao;
+    private LogService logService;
 
     @Override
     public void init() {
         this.productDao = new ProductDao(DataSourceFactory.getDataSource());
         this.categoryDao = new CategoryDao(DataSourceFactory.getDataSource());
+        this.logService = new LogService(DataSourceFactory.getDataSource());
     }
 
     @Override
@@ -99,6 +102,8 @@ public class AdminProductServlet extends HttpServlet {
                     if (existing.isPresent()) {
                         deleteImageIfPresent(existing.get().getImageUrl());
                     }
+                    logService.logOperation(merchant.getId(), merchant.getRole(), "DELETE_PRODUCT",
+                            "删除商品ID=" + productId, request.getRemoteAddr());
                     request.getSession().setAttribute("adminProductMessage", "商品已删除。");
                 }
             } else {
@@ -121,12 +126,16 @@ public class AdminProductServlet extends HttpServlet {
                         if (imageUrl != null) {
                             deleteImageIfPresent(request.getParameter("currentImageUrl"));
                         }
+                        logService.logOperation(merchant.getId(), merchant.getRole(), "UPDATE_PRODUCT",
+                                "更新商品: " + product.getName(), request.getRemoteAddr());
                         request.getSession().setAttribute("adminProductMessage", "商品已更新。");
                     }
                 } else {
                     // 新增商品默认归属当前商家
                     product.setMerchantId(merchant.getId());
                     productDao.insertProduct(product);
+                    logService.logOperation(merchant.getId(), merchant.getRole(), "ADD_PRODUCT",
+                            "新增商品: " + product.getName(), request.getRemoteAddr());
                     request.getSession().setAttribute("adminProductMessage", "商品已新增。");
                 }
             }
@@ -171,7 +180,7 @@ public class AdminProductServlet extends HttpServlet {
         Object user = session.getAttribute("currentUser");
         if (user instanceof User) {
             User current = (User) user;
-            if ("MERCHANT".equalsIgnoreCase(current.getRole())) {
+            if ("MERCHANT".equalsIgnoreCase(current.getRole()) || "ADMIN".equalsIgnoreCase(current.getRole())) {
                 return current;
             }
         }

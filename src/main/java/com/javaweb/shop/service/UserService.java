@@ -85,8 +85,11 @@ public class UserService {
             return "CUSTOMER";
         }
         String normalized = role.trim().toUpperCase();
-        if ("MERCHANT".equals(normalized) || "ADMIN".equals(normalized)) {
+        if ("MERCHANT".equals(normalized)) {
             return "MERCHANT";
+        }
+        if ("ADMIN".equals(normalized)) {
+            return "ADMIN";
         }
         return "CUSTOMER";
     }

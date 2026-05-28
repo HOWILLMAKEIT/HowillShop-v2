@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 // 用户数据访问
@@ -97,6 +99,102 @@ public class UserDao {
             stmt.setLong(1, userId);
             stmt.executeUpdate();
         }
+    }
+
+    public List<User> findByRole(String role) throws SQLException {
+        String sql = "SELECT id, username, email, phone, role, status, created_at, last_login_at " +
+                "FROM users WHERE role = ? ORDER BY created_at DESC";
+        List<User> users = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, role);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapUser(rs));
+                }
+            }
+        }
+        return users;
+    }
+
+    public List<User> listAll() throws SQLException {
+        String sql = "SELECT id, username, email, phone, role, status, created_at, last_login_at " +
+                "FROM users ORDER BY created_at DESC";
+        List<User> users = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                users.add(mapUser(rs));
+            }
+        }
+        return users;
+    }
+
+    public Optional<User> findById(long userId) throws SQLException {
+        String sql = "SELECT id, username, email, phone, role, status, created_at, last_login_at " +
+                "FROM users WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapUser(rs));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void updatePassword(long userId, String passwordHash) throws SQLException {
+        String sql = "UPDATE users SET password_hash = ? WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, passwordHash);
+            stmt.setLong(2, userId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void updateStatus(long userId, int status) throws SQLException {
+        String sql = "UPDATE users SET status = ? WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, status);
+            stmt.setLong(2, userId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public int deleteById(long userId) throws SQLException {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            return stmt.executeUpdate();
+        }
+    }
+
+    public long countByRole(String role) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, role);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getLong(1);
+            }
+        }
+        return 0;
+    }
+
+    public long countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) return rs.getLong(1);
+        }
+        return 0;
     }
 
     private User mapUser(ResultSet rs) throws SQLException {

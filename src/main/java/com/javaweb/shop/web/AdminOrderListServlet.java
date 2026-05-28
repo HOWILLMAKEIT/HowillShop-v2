@@ -72,7 +72,7 @@ public class AdminOrderListServlet extends HttpServlet {
         Object user = session.getAttribute("currentUser");
         if (user instanceof User) {
             User current = (User) user;
-            if ("MERCHANT".equalsIgnoreCase(current.getRole())) {
+            if ("MERCHANT".equalsIgnoreCase(current.getRole()) || "ADMIN".equalsIgnoreCase(current.getRole())) {
                 return current;
             }
         }

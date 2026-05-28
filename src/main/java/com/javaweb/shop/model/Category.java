@@ -4,6 +4,8 @@ package com.javaweb.shop.model;
 public class Category {
     private long id;
     private String name;
+    private int status;
+    private int sortOrder;
 
     public long getId() {
         return id;
@@ -19,5 +21,21 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

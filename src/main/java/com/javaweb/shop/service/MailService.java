@@ -11,6 +11,7 @@ import jakarta.mail.internet.MimeMessage;
 import com.javaweb.shop.model.OrderItem;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
 
-// 发货邮件发送服务
+// 发货邮件发送服务（含支付确认邮件）
 public class MailService {
     private final Properties mailProps;
 
@@ -41,6 +42,25 @@ public class MailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("订单已发货通知");
             message.setText(buildShipmentContent(orderNo, merchantName, items, shippedAt));
+            Transport.send(message);
+        } catch (Exception ex) {
+            throw new ValidationException("邮件发送失败。");
+        }
+    }
+
+    public void sendPaymentConfirmEmail(String toEmail, String orderNo,
+                                        List<OrderItem> items, BigDecimal totalAmount)
+            throws ValidationException {
+        if (toEmail == null || toEmail.isBlank()) {
+            throw new ValidationException("用户邮箱为空。");
+        }
+        try {
+            Session session = buildSession();
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(mailProps.getProperty("mail.from")));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("支付成功确认 — HowillSHOP 小昊商城");
+            message.setText(buildPaymentContent(orderNo, items, totalAmount));
             Transport.send(message);
         } catch (Exception ex) {
             throw new ValidationException("邮件发送失败。");
@@ -73,6 +93,34 @@ public class MailService {
             }
         }
         content.append("\n如有问题，请联系发货店铺或 HowillSHOP 小昊商城 客服。");
+        return content.toString();
+    }
+
+    private String buildPaymentContent(String orderNo, List<OrderItem> items, BigDecimal totalAmount) {
+        StringBuilder content = new StringBuilder();
+        content.append("您好，感谢您在 HowillSHOP 小昊商城 购物！").append("\n\n");
+        content.append("您的订单已支付成功，详情如下：").append("\n");
+        content.append("订单号：").append(orderNo).append("\n");
+        content.append("支付时间：").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n\n");
+
+        content.append("购买商品：").append("\n");
+        if (items == null || items.isEmpty()) {
+            content.append("- 请在订单详情中查看商品明细").append("\n");
+        } else {
+            for (OrderItem item : items) {
+                content.append("- ")
+                        .append(item.getProductName())
+                        .append(" × ")
+                        .append(item.getQuantity())
+                        .append("  ¥")
+                        .append(item.getUnitPrice())
+                        .append("\n");
+            }
+        }
+        if (totalAmount != null) {
+            content.append("\n合计金额：¥").append(totalAmount).append("\n");
+        }
+        content.append("\n商家将尽快为您发货，届时会再次邮件通知。");
         return content.toString();
     }
 

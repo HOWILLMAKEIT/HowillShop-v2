@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="com.javaweb.shop.model.Product" %>
+<%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -61,7 +62,49 @@
                 </div>
             <% } %>
         </div>
+        <%-- "浏览过此商品的人也买了" 推荐区域 --%>
+        <% List<Product> relatedProducts = (List<Product>) request.getAttribute("relatedProducts");
+           if (relatedProducts != null && !relatedProducts.isEmpty()) { %>
+        <div class="card" style="margin-top:1.5rem">
+            <h2>浏览过此商品的人也买了</h2>
+            <div class="product-grid">
+                <% for (Product rp : relatedProducts) {
+                    String rpImg = rp.getImageUrl();
+                    String rpSrc = null;
+                    if (rpImg != null && !rpImg.isBlank()) {
+                        if (rpImg.startsWith("http://") || rpImg.startsWith("https://") || rpImg.startsWith("/")) {
+                            rpSrc = rpImg;
+                        } else {
+                            rpSrc = contextPath + "/" + rpImg;
+                        }
+                    }
+                %>
+                <a class="product-card" href="<%= contextPath %>/products/detail?productId=<%= rp.getId() %>">
+                    <img src="<%= rpSrc != null ? rpSrc : "" %>" alt="<%= rp.getName() %>">
+                    <div class="product-card-body">
+                        <div class="product-card-title"><%= rp.getName() %></div>
+                        <div class="price">￥<%= rp.getPrice() %></div>
+                    </div>
+                </a>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
     </div>
 </main>
+<script>
+    (function() {
+        var startTime = Date.now();
+        var productId = <%= product != null ? product.getId() : 0 %>;
+        var categoryId = <%= product != null ? product.getCategoryId() : 0 %>;
+        window.addEventListener('beforeunload', function() {
+            var dwellSeconds = Math.round((Date.now() - startTime) / 1000);
+            if (dwellSeconds > 0) {
+                navigator.sendBeacon('${pageContext.request.contextPath}/api/browse',
+                    JSON.stringify({productId: productId, categoryId: categoryId, dwellTime: dwellSeconds}));
+            }
+        });
+    })();
+</script>
 </body>
 </html>

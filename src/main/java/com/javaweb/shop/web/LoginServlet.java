@@ -7,6 +7,7 @@ import com.javaweb.shop.infra.db.DataSourceFactory;
 import com.javaweb.shop.model.CartSummary;
 import com.javaweb.shop.model.User;
 import com.javaweb.shop.service.CartService;
+import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.UserService;
 import com.javaweb.shop.service.ValidationException;
 
@@ -21,6 +22,7 @@ import java.sql.SQLException;
 public class LoginServlet extends HttpServlet {
     private UserService userService;
     private CartService cartService;
+    private LogService logService;
 
     @Override
     public void init() {
@@ -30,6 +32,7 @@ public class LoginServlet extends HttpServlet {
                 new CartDao(DataSourceFactory.getDataSource()),
                 new ProductDao(DataSourceFactory.getDataSource())
         );
+        this.logService = new LogService(DataSourceFactory.getDataSource());
     }
 
     @Override
@@ -64,6 +67,12 @@ public class LoginServlet extends HttpServlet {
                 throw new ValidationException("该账号为商家，请选择商家登录。");
             }
             request.getSession(true).setAttribute("currentUser", user);
+            // 数据采集：记录登录日志
+            logService.logLogin(user.getId(), request.getRemoteAddr(), request.getHeader("User-Agent"));
+            if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                return;
+            }
             // 登录后加载购物车摘要，页面能直接展示数量/总价
             if (!merchantLogin) {
                 CartSummary summary = cartService.loadCart(user.getId());

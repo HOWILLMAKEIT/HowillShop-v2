@@ -58,6 +58,38 @@
         <servlet-name>AdminSalesReportServlet</servlet-name>
         <servlet-class>com.javaweb.shop.web.AdminSalesReportServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BrowseLogServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.BrowseLogServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.AdminDashboardServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminUserServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.AdminUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminAnalyticsServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.AdminAnalyticsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminLogServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.AdminLogServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminUserProfileServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.AdminUserProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RecommendationServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.RecommendationServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CategoryManageServlet</servlet-name>
+        <servlet-class>com.javaweb.shop.web.CategoryManageServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
@@ -67,6 +99,35 @@
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/auth/login</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BrowseLogServlet</servlet-name>
+        <url-pattern>/api/browse</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminDashboardServlet</servlet-name>
+        <url-pattern>/admin/dashboard</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminUserServlet</servlet-name>
+        <url-pattern>/admin/users</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminAnalyticsServlet</servlet-name>
+        <url-pattern>/admin/analytics</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminLogServlet</servlet-name>
+        <url-pattern>/admin/logs</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminUserProfileServlet</servlet-name>
+        <url-pattern>/admin/profiles</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RecommendationServlet</servlet-name>
+        <url-pattern>/recommendations</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/auth/logout</url-pattern>
@@ -130,6 +191,10 @@
     <servlet-mapping>
         <servlet-name>AdminSalesReportServlet</servlet-name>
         <url-pattern>/admin/sales</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CategoryManageServlet</servlet-name>
+        <url-pattern>/admin/categories</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

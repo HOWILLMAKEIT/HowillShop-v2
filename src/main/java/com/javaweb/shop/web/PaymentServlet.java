@@ -5,10 +5,18 @@ import com.javaweb.shop.dao.OrderDao;
 import com.javaweb.shop.dao.ProductDao;
 import com.javaweb.shop.infra.db.DataSourceFactory;
 import com.javaweb.shop.model.OrderDetail;
+import com.javaweb.shop.model.OrderItem;
+import com.javaweb.shop.model.OrderMailInfo;
 import com.javaweb.shop.model.User;
+import com.javaweb.shop.service.LogService;
+import com.javaweb.shop.service.MailService;
 import com.javaweb.shop.service.OrderService;
 import com.javaweb.shop.service.PaymentService;
 import com.javaweb.shop.service.ValidationException;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,14 +30,23 @@ import java.sql.SQLException;
 public class PaymentServlet extends HttpServlet {
     private OrderService orderService;
     private PaymentService paymentService;
+    private LogService logService;
+    private OrderDao orderDao;
+    private MailService mailService;
 
     @Override
     public void init() {
-        OrderDao orderDao = new OrderDao(DataSourceFactory.getDataSource());
+        orderDao = new OrderDao(DataSourceFactory.getDataSource());
         CartDao cartDao = new CartDao(DataSourceFactory.getDataSource());
         ProductDao productDao = new ProductDao(DataSourceFactory.getDataSource());
         this.orderService = new OrderService(DataSourceFactory.getDataSource(), cartDao, orderDao, productDao);
         this.paymentService = new PaymentService(orderDao);
+        this.logService = new LogService(DataSourceFactory.getDataSource());
+        try {
+            this.mailService = new MailService();
+        } catch (ValidationException ex) {
+            this.mailService = null;
+        }
     }
 
     @Override
@@ -78,6 +95,26 @@ public class PaymentServlet extends HttpServlet {
 
         try {
             paymentService.simulatePayment(user.getId(), orderId, success);
+            if (success) {
+                OrderDetail detail = orderService.getOrderDetail(user.getId(), orderId);
+                List<OrderItem> items = detail.getItems();
+                // 数据采集：记录购买日志
+                logService.logPurchase(user.getId(), orderId, items);
+                // 支付成功后发送邮件确认
+                if (mailService != null) {
+                    try {
+                        Optional<OrderMailInfo> mailInfo = orderDao.findOrderMailInfo(orderId);
+                        if (mailInfo.isPresent()) {
+                            BigDecimal total = detail.getOrder().getTotalAmount();
+                            mailService.sendPaymentConfirmEmail(
+                                    mailInfo.get().getEmail(), mailInfo.get().getOrderNo(), items, total);
+                            orderDao.updateEmailSentAt(orderId);
+                        }
+                    } catch (Exception ignored) {
+                        // 邮件发送失败不影响支付流程
+                    }
+                }
+            }
             response.sendRedirect(request.getContextPath() + "/orders/detail?orderId=" + orderId);
         } catch (ValidationException ex) {
             request.getSession().setAttribute("paymentError", ex.getMessage());

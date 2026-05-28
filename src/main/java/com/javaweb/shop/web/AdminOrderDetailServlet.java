@@ -6,6 +6,7 @@ import com.javaweb.shop.dao.ProductDao;
 import com.javaweb.shop.infra.db.DataSourceFactory;
 import com.javaweb.shop.model.OrderDetail;
 import com.javaweb.shop.model.User;
+import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.MailService;
 import com.javaweb.shop.service.OrderService;
 import com.javaweb.shop.service.ShippingService;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 public class AdminOrderDetailServlet extends HttpServlet {
     private OrderService orderService;
     private ShippingService shippingService;
+    private LogService logService;
 
     @Override
     public void init() {
@@ -35,6 +37,7 @@ public class AdminOrderDetailServlet extends HttpServlet {
         } catch (ValidationException ex) {
             throw new IllegalStateException("邮件配置有误。", ex);
         }
+        this.logService = new LogService(DataSourceFactory.getDataSource());
     }
 
     @Override
@@ -87,6 +90,8 @@ public class AdminOrderDetailServlet extends HttpServlet {
             String action = request.getParameter("action");
             if ("ship".equalsIgnoreCase(action)) {
                 shippingService.shipOrder(orderId, merchant.getId());
+                logService.logOperation(merchant.getId(), merchant.getRole(), "SHIP_ORDER",
+                        "发货订单ID=" + orderId, request.getRemoteAddr());
                 request.getSession().setAttribute("adminOrderMessage", "订单已标记为已发货。");
             } else {
                 request.getSession().setAttribute("adminOrderError", "不支持的操作。");
@@ -108,8 +113,7 @@ public class AdminOrderDetailServlet extends HttpServlet {
         Object user = session.getAttribute("currentUser");
         if (user instanceof User) {
             User current = (User) user;
-            // 简单角色校验，拦非商家访问
-            if ("MERCHANT".equalsIgnoreCase(current.getRole())) {
+            if ("MERCHANT".equalsIgnoreCase(current.getRole()) || "ADMIN".equalsIgnoreCase(current.getRole())) {
                 return current;
             }
         }

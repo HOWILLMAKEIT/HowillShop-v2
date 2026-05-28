@@ -1,11 +1,13 @@
 package com.javaweb.shop.dao;
 
 import com.javaweb.shop.model.CartItem;
+import com.javaweb.shop.model.CategorySales;
 import com.javaweb.shop.model.Order;
 import com.javaweb.shop.model.OrderItem;
 import com.javaweb.shop.model.OrderMailInfo;
 import com.javaweb.shop.model.ProductSales;
 import com.javaweb.shop.model.SalesSummary;
+import com.javaweb.shop.model.StockDistribution;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -304,6 +306,7 @@ public class OrderDao {
         }
     }
 
+    // 按日汇总已支付订单（销售趋势图用）
     public List<SalesSummary> listDailySales(LocalDate startDate, LocalDate endDate) throws SQLException {
         // 销售统计只统计已支付订单
         StringBuilder sql = new StringBuilder(
@@ -365,6 +368,7 @@ public class OrderDao {
         return summaries;
     }
 
+    // 商品销售排行榜（按销量降序）
     public List<ProductSales> listProductSales(LocalDate startDate, LocalDate endDate) throws SQLException {
         StringBuilder sql = new StringBuilder(
                 "SELECT oi.product_id, oi.product_name, SUM(oi.quantity) AS total_quantity, " +
@@ -552,5 +556,135 @@ public class OrderDao {
         for (int i = 0; i < params.size(); i++) {
             stmt.setDate(i + 1 + offset, params.get(i));
         }
+    }
+
+    public long countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM orders";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) return rs.getLong(1);
+        }
+        return 0;
+    }
+
+    public BigDecimal totalRevenue() throws SQLException {
+        String sql = "SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE pay_status = 'PAID'";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) return rs.getBigDecimal(1);
+        }
+        return BigDecimal.ZERO;
+    }
+
+    // 品类销售分布（饼图用）
+    public List<CategorySales> listCategorySales(LocalDate startDate, LocalDate endDate) throws SQLException {
+        String sql = "SELECT c.id AS category_id, c.name AS category_name, " +
+                "COALESCE(SUM(oi.quantity), 0) AS total_quantity, " +
+                "COALESCE(SUM(oi.subtotal), 0) AS total_amount " +
+                "FROM order_items oi " +
+                "JOIN orders o ON oi.order_id = o.id AND o.pay_status = 'PAID' " +
+                "JOIN products p ON oi.product_id = p.id " +
+                "JOIN categories c ON p.category_id = c.id " +
+                "WHERE o.created_at BETWEEN ? AND ? " +
+                "GROUP BY c.id, c.name ORDER BY total_amount DESC";
+        List<CategorySales> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, Date.valueOf(startDate));
+            stmt.setDate(2, Date.valueOf(endDate.plusDays(1)));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    CategorySales cs = new CategorySales();
+                    cs.setCategoryId(rs.getLong("category_id"));
+                    cs.setCategoryName(rs.getString("category_name"));
+                    cs.setTotalQuantity(rs.getLong("total_quantity"));
+                    cs.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    result.add(cs);
+                }
+            }
+        }
+        return result;
+    }
+
+    // 按小时汇总当日销售（异常检测用）
+    public List<SalesSummary> listHourlySales(LocalDate date) throws SQLException {
+        String sql = "SELECT HOUR(created_at) AS h, COUNT(*) AS order_count, " +
+                "COALESCE(SUM(total_amount), 0) AS total_amount " +
+                "FROM orders WHERE pay_status = 'PAID' AND created_at BETWEEN ? AND ? " +
+                "GROUP BY h ORDER BY h";
+        List<SalesSummary> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, Date.valueOf(date));
+            stmt.setDate(2, Date.valueOf(date.plusDays(1)));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    SalesSummary s = new SalesSummary();
+                    s.setOrderCount(rs.getLong("order_count"));
+                    s.setTotalAmount(rs.getBigDecimal("total_amount"));
+                    result.add(s);
+                }
+            }
+        }
+        return result;
+    }
+
+    // 用户消费总额（用户画像-购买力）
+    public BigDecimal totalSpentByUser(long userId) throws SQLException {
+        String sql = "SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE user_id = ? AND pay_status = 'PAID'";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getBigDecimal(1);
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+
+    // 按订单状态统计
+    public List<SalesSummary> listOrderStatusStats() throws SQLException {
+        String sql = "SELECT pay_status, ship_status, COUNT(*) AS order_count, " +
+                "COALESCE(SUM(total_amount), 0) AS total_amount " +
+                "FROM orders GROUP BY pay_status, ship_status ORDER BY pay_status, ship_status";
+        List<SalesSummary> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                SalesSummary s = new SalesSummary();
+                s.setOrderCount(rs.getLong("order_count"));
+                s.setTotalAmount(rs.getBigDecimal("total_amount"));
+                s.setPayStatus(rs.getString("pay_status"));
+                s.setShipStatus(rs.getString("ship_status"));
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
+    // 按库存区间统计商品数量
+    public List<StockDistribution> listStockDistribution() throws SQLException {
+        String sql = "SELECT CASE " +
+                "WHEN stock = 0 THEN '缺货' " +
+                "WHEN stock <= 10 THEN '低库存(1-10)' " +
+                "WHEN stock <= 50 THEN '正常(11-50)' " +
+                "ELSE '充足(50+)' END AS stock_range, " +
+                "COUNT(*) AS cnt " +
+                "FROM products GROUP BY stock_range ORDER BY MIN(stock)";
+        List<StockDistribution> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                StockDistribution row = new StockDistribution();
+                row.setStockRange(rs.getString("stock_range"));
+                row.setProductCount(rs.getLong("cnt"));
+                result.add(row);
+            }
+        }
+        return result;
     }
 }

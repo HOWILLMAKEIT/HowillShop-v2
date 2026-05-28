@@ -30,3 +30,6 @@ docs/
 .DS_Store
 Thumbs.db
 ehthumbs.db
+
+# Claude Code
+.claude/
