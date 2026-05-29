@@ -4,6 +4,25 @@
 <%@ page import="com.javaweb.shop.model.StockDistribution" %>
 <%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.util.List" %>
+<%!
+    private String payLabel(String status) {
+        if (status == null) return "-";
+        switch (status) {
+            case "PAID": return "已支付";
+            case "UNPAID": return "未支付";
+            default: return status;
+        }
+    }
+    private String shipLabel(String status) {
+        if (status == null) return "-";
+        switch (status) {
+            case "PENDING": return "未发货";
+            case "SHIPPED": return "已发货";
+            case "DELIVERED": return "已送达";
+            default: return status;
+        }
+    }
+%>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -46,66 +65,74 @@
             </div>
         </div>
 
-        <h3>今日异常检测（按小时）</h3>
-        <table>
-            <thead>
-                <tr><th>时段</th><th>订单数</th><th>金额</th><th>状态</th></tr>
-            </thead>
-            <tbody>
-                <% if (hourly != null) {
-                    double avgOrders = hourly.stream().mapToLong(SalesSummary::getOrderCount).average().orElse(0);
-                    for (int i = 0; i < hourly.size(); i++) {
-                        SalesSummary h = hourly.get(i);
-                        boolean anomaly = avgOrders > 0 && h.getOrderCount() > avgOrders * 3;
-                %>
-                <tr<%= anomaly ? " style=\"background:#fff3f3\"" : "" %>>
-                    <td><%= i %>:00</td>
-                    <td><%= h.getOrderCount() %></td>
-                    <td><%= h.getTotalAmount() %></td>
-                    <td><%= anomaly ? "<span style=\"color:red;font-weight:bold\">异常</span>" : "正常" %></td>
-                </tr>
-                <% }
-                } %>
-            </tbody>
-        </table>
+        <div class="chart-row" style="grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));">
+            <div class="card">
+                <h3>今日异常检测（按小时）</h3>
+                <table>
+                    <thead>
+                        <tr><th>时段</th><th>订单数</th><th>金额</th><th>状态</th></tr>
+                    </thead>
+                    <tbody>
+                        <% if (hourly != null) {
+                            double avgOrders = hourly.stream().mapToLong(SalesSummary::getOrderCount).average().orElse(0);
+                            for (int i = 0; i < hourly.size(); i++) {
+                                SalesSummary h = hourly.get(i);
+                                boolean anomaly = avgOrders > 0 && h.getOrderCount() > avgOrders * 3;
+                        %>
+                        <tr<%= anomaly ? " style=\"background:#fff3f3\"" : "" %>>
+                            <td><%= i %>:00</td>
+                            <td><%= h.getOrderCount() %></td>
+                            <td><%= h.getTotalAmount() %></td>
+                            <td><%= anomaly ? "<span style=\"color:red;font-weight:bold\">异常</span>" : "正常" %></td>
+                        </tr>
+                        <% }
+                        } %>
+                    </tbody>
+                </table>
+            </div>
 
-        <h3>订单状态分布</h3>
-        <table>
-            <thead>
-                <tr><th>支付状态</th><th>发货状态</th><th>订单数</th><th>金额</th></tr>
-            </thead>
-            <tbody>
-                <% if (statusStats != null) {
-                    for (SalesSummary s : statusStats) {
-                %>
-                <tr>
-                    <td><%= s.getPayStatus() != null ? s.getPayStatus() : "-" %></td>
-                    <td><%= s.getShipStatus() != null ? s.getShipStatus() : "-" %></td>
-                    <td><%= s.getOrderCount() %></td>
-                    <td><%= s.getTotalAmount() %></td>
-                </tr>
-                <% }
-                } %>
-            </tbody>
-        </table>
+            <div class="card">
+                <h3>订单状态分布</h3>
+                <table>
+                    <thead>
+                        <tr><th>支付状态</th><th>发货状态</th><th>订单数</th><th>金额</th></tr>
+                    </thead>
+                    <tbody>
+                        <% if (statusStats != null) {
+                            for (SalesSummary s : statusStats) {
+                        %>
+                        <tr>
+                            <td><%= payLabel(s.getPayStatus()) %></td>
+                            <td><%= shipLabel(s.getShipStatus()) %></td>
+                            <td><%= s.getOrderCount() %></td>
+                            <td><%= s.getTotalAmount() %></td>
+                        </tr>
+                        <% }
+                        } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-        <h3>库存分布</h3>
-        <table>
-            <thead>
-                <tr><th>库存区间</th><th>商品数量</th></tr>
-            </thead>
-            <tbody>
-                <% if (stockStats != null) {
-                    for (StockDistribution s : stockStats) {
-                %>
-                <tr>
-                    <td><%= s.getStockRange() %></td>
-                    <td><%= s.getProductCount() %></td>
-                </tr>
-                <% }
-                } %>
-            </tbody>
-        </table>
+        <div class="card" style="margin-top:1.5rem; max-width:480px;">
+            <h3>库存分布</h3>
+            <table>
+                <thead>
+                    <tr><th>库存区间</th><th>商品数量</th></tr>
+                </thead>
+                <tbody>
+                    <% if (stockStats != null) {
+                        for (StockDistribution s : stockStats) {
+                    %>
+                    <tr>
+                        <td><%= s.getStockRange() %></td>
+                        <td><%= s.getProductCount() %></td>
+                    </tr>
+                    <% }
+                    } %>
+                </tbody>
+            </table>
+        </div>
     </div>
 </main>
 <script>
