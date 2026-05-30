@@ -19,61 +19,61 @@ USE javaweb_shop;
 -- ====================================================================
 -- 1. 创建商家账号（5个）
 -- ====================================================================
-INSERT INTO users (username, password_hash, email, role, status) VALUES
-('潮流服饰', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'fashion1@test.com', 'MERCHANT', 1),
-('数码专营', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'digital1@test.com', 'MERCHANT', 1),
-('家居生活', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'home1@test.com', 'MERCHANT', 1),
-('美妆护肤', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'beauty@test.com', 'MERCHANT', 1),
-('运动户外', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'sports@test.com', 'MERCHANT', 1);
+INSERT INTO users (id, username, password_hash, email, role, status) VALUES
+(24, '潮流服饰', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'fashion1@test.com', 'MERCHANT', 1),
+(25, '数码专营', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'digital1@test.com', 'MERCHANT', 1),
+(26, '家居生活', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'home1@test.com', 'MERCHANT', 1),
+(27, '美妆护肤', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'beauty@test.com', 'MERCHANT', 1),
+(28, '运动户外', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'sports@test.com', 'MERCHANT', 1);
 
 -- ====================================================================
 -- 2. 创建用户账号（10个）
 -- ====================================================================
-INSERT INTO users (username, password_hash, email, role, status) VALUES
-('张伟', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhangwei@test.com', 'CUSTOMER', 1),
-('李娜', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'lina@test.com', 'CUSTOMER', 1),
-('王强', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'wangqiang@test.com', 'CUSTOMER', 1),
-('刘芳', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'liufang@test.com', 'CUSTOMER', 1),
-('陈明', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'chenming@test.com', 'CUSTOMER', 1),
-('杨静', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'yangjing@test.com', 'CUSTOMER', 1),
-('赵磊', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhaolei@test.com', 'CUSTOMER', 1),
-('孙丽', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'sunli@test.com', 'CUSTOMER', 1),
-('周杰', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhoujie@test.com', 'CUSTOMER', 1),
-('吴敏', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'wumin@test.com', 'CUSTOMER', 1);
+INSERT INTO users (id, username, password_hash, email, role, status) VALUES
+(29, '张伟', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhangwei@test.com', 'CUSTOMER', 1),
+(30, '李娜', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'lina@test.com', 'CUSTOMER', 1),
+(31, '王强', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'wangqiang@test.com', 'CUSTOMER', 1),
+(32, '刘芳', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'liufang@test.com', 'CUSTOMER', 1),
+(33, '陈明', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'chenming@test.com', 'CUSTOMER', 1),
+(34, '杨静', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'yangjing@test.com', 'CUSTOMER', 1),
+(35, '赵磊', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhaolei@test.com', 'CUSTOMER', 1),
+(36, '孙丽', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'sunli@test.com', 'CUSTOMER', 1),
+(37, '周杰', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhoujie@test.com', 'CUSTOMER', 1),
+(38, '吴敏', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'wumin@test.com', 'CUSTOMER', 1);
 
 -- ====================================================================
 -- 3. 创建商品（16款，价格正确）
 -- ====================================================================
 -- 潮流服饰 (ID=24) - 分类1 - 3款商品
-INSERT INTO products (category_id, merchant_id, name, price, stock, status, description) VALUES
-(1, 24, '春季新款休闲外套', 399.00, 80, 1, '2026春季新品，舒适面料，时尚百搭'),
-(1, 24, '纯棉基础款T恤', 89.00, 150, 1, '100%纯棉，透气舒适，多色可选'),
-(1, 24, '修身牛仔裤', 199.00, 120, 1, '经典修身版型，舒适弹性面料');
+INSERT INTO products (id, category_id, merchant_id, name, price, stock, status, description) VALUES
+(24, 1, 24, '春季新款休闲外套', 399.00, 80, 1, '2026春季新品，舒适面料，时尚百搭'),
+(25, 1, 24, '纯棉基础款T恤', 89.00, 150, 1, '100%纯棉，透气舒适，多色可选'),
+(26, 1, 24, '修身牛仔裤', 199.00, 120, 1, '经典修身版型，舒适弹性面料');
 
 -- 数码专营 (ID=25) - 分类3 - 4款商品
-INSERT INTO products (category_id, merchant_id, name, price, stock, status, description) VALUES
-(3, 25, '无线蓝牙耳机', 299.00, 100, 1, '主动降噪，30小时续航，支持快充'),
-(3, 25, '智能手环运动版', 199.00, 80, 1, '心率监测，睡眠分析，50米防水'),
-(3, 25, '便携充电宝', 129.00, 200, 1, '20000mAh大容量，支持快充'),
-(3, 25, '无线充电器', 79.00, 150, 1, '支持多设备同时充电');
+INSERT INTO products (id, category_id, merchant_id, name, price, stock, status, description) VALUES
+(27, 3, 25, '无线蓝牙耳机', 299.00, 100, 1, '主动降噪，30小时续航，支持快充'),
+(28, 3, 25, '智能手环运动版', 199.00, 80, 1, '心率监测，睡眠分析，50米防水'),
+(29, 3, 25, '便携充电宝', 129.00, 200, 1, '20000mAh大容量，支持快充'),
+(30, 3, 25, '无线充电器', 79.00, 150, 1, '支持多设备同时充电');
 
 -- 家居生活 (ID=26) - 分类2 - 3款商品
-INSERT INTO products (category_id, merchant_id, name, price, stock, status, description) VALUES
-(2, 26, '北欧风简约台灯', 159.00, 60, 1, '护眼LED光源，三档调光，极简设计'),
-(2, 26, '记忆棉枕头', 129.00, 100, 1, '慢回弹记忆棉，颈椎保护'),
-(2, 26, '简约置物架', 89.00, 80, 1, '多层收纳，安装简便');
+INSERT INTO products (id, category_id, merchant_id, name, price, stock, status, description) VALUES
+(31, 2, 26, '北欧风简约台灯', 159.00, 60, 1, '护眼LED光源，三档调光，极简设计'),
+(32, 2, 26, '记忆棉枕头', 129.00, 100, 1, '慢回弹记忆棉，颈椎保护'),
+(33, 2, 26, '简约置物架', 89.00, 80, 1, '多层收纳，安装简便');
 
 -- 美妆护肤 (ID=27) - 分类6 - 3款商品
-INSERT INTO products (category_id, merchant_id, name, price, stock, status, description) VALUES
-(6, 27, '保湿面膜套装', 199.00, 120, 1, '深层补水，修护肌肤，10片装'),
-(6, 27, '修护精华液', 299.00, 80, 1, '修复受损肌肤，提亮肤色，30ml'),
-(6, 27, '温和洁面乳', 79.00, 150, 1, '温和清洁，不紧绷，150ml');
+INSERT INTO products (id, category_id, merchant_id, name, price, stock, status, description) VALUES
+(34, 6, 27, '保湿面膜套装', 199.00, 120, 1, '深层补水，修护肌肤，10片装'),
+(35, 6, 27, '修护精华液', 299.00, 80, 1, '修复受损肌肤，提亮肤色，30ml'),
+(36, 6, 27, '温和洁面乳', 79.00, 150, 1, '温和清洁，不紧绷，150ml');
 
 -- 运动户外 (ID=28) - 分类4 - 3款商品
-INSERT INTO products (category_id, merchant_id, name, price, stock, status, description) VALUES
-(4, 28, '专业跑步鞋', 499.00, 60, 1, '缓震回弹，透气舒适，适合长跑'),
-(4, 28, '运动健身背包', 199.00, 80, 1, '大容量设计，干湿分离，多功能口袋'),
-(4, 28, '瑜伽垫套装', 129.00, 100, 1, '防滑环保材质，附带弹力带和收纳袋');
+INSERT INTO products (id, category_id, merchant_id, name, price, stock, status, description) VALUES
+(37, 4, 28, '专业跑步鞋', 499.00, 60, 1, '缓震回弹，透气舒适，适合长跑'),
+(38, 4, 28, '运动健身背包', 199.00, 80, 1, '大容量设计，干湿分离，多功能口袋'),
+(39, 4, 28, '瑜伽垫套装', 129.00, 100, 1, '防滑环保材质，附带弹力带和收纳袋');
 
 -- ====================================================================
 -- 4. 创建浏览记录（171条，分布在4-5月）
@@ -406,7 +406,7 @@ INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_pric
 
 -- 吴敏 (ID=38) - 5个订单 - 从不同商家购买
 INSERT INTO orders (order_no, user_id, merchant_id, total_amount, order_status, pay_status, ship_status, receiver_name, receiver_phone, receiver_address, created_at) VALUES
-('ORD20260418001', 38, 24, 488.00, 'COMPLETED', 'PAID', 'SHIPPED', '吴敏', '13800001010', '重庆市渝北区xxx', '2026-04-18 11:00:00');
+('ORD20260418002', 38, 24, 488.00, 'COMPLETED', 'PAID', 'SHIPPED', '吴敏', '13800001010', '重庆市渝北区xxx', '2026-04-18 11:00:00');
 SET @o28 = LAST_INSERT_ID();
 INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, subtotal) VALUES
 (@o28, 24, '春季新款休闲外套', 1, 399.00, 399.00),

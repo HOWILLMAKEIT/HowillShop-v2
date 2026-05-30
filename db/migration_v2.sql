@@ -75,5 +75,5 @@ CREATE TABLE IF NOT EXISTS operation_logs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 插入默认管理员账号（密码: admin123）
-INSERT IGNORE INTO users (username, password_hash, email, role, status)
-VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin@howillshop.com', 'ADMIN', 1);
+INSERT IGNORE INTO users (id, username, password_hash, email, role, status)
+VALUES (1, 'admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin@howillshop.com', 'ADMIN', 1);
