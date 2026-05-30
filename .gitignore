@@ -15,6 +15,12 @@ docs/
 *.war
 *.ear
 
+# node (report generation)
+node_modules/
+package.json
+package-lock.json
+generate_report.js
+
 # logs
 *.log
 
