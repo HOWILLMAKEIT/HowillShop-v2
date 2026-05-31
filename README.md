@@ -29,11 +29,6 @@
 <p align="center">
   <b>姓名</b>：郭昊 &nbsp;|&nbsp; <b>班级</b>：23 网络工程 &nbsp;|&nbsp; <b>学号</b>：202330450471
 </p>
-
-<p align="center">
-  <b>在线演示</b>：见 <a href="部署指南.md">部署指南</a>
-</p>
-
 ---
 
 <p align="center">
