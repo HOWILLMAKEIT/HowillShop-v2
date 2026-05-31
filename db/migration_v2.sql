@@ -76,4 +76,4 @@ CREATE TABLE IF NOT EXISTS operation_logs (
 
 -- 插入默认管理员账号（密码: admin123）
 INSERT IGNORE INTO users (id, username, password_hash, email, role, status)
-VALUES (1, 'admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'admin@howillshop.com', 'ADMIN', 1);
+VALUES (1, 'admin', '$2a$10$tZYvaZj1UFGR6mSxQpiJoud47z7DpP4ykacrIZyZD3iANcVn/Q7z6', 'admin@howillshop.com', 'ADMIN', 1);

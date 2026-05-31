@@ -20,26 +20,26 @@ USE javaweb_shop;
 -- 1. 创建商家账号（5个）
 -- ====================================================================
 INSERT INTO users (id, username, password_hash, email, role, status) VALUES
-(24, '潮流服饰', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'fashion1@test.com', 'MERCHANT', 1),
-(25, '数码专营', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'digital1@test.com', 'MERCHANT', 1),
-(26, '家居生活', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'home1@test.com', 'MERCHANT', 1),
-(27, '美妆护肤', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'beauty@test.com', 'MERCHANT', 1),
-(28, '运动户外', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'sports@test.com', 'MERCHANT', 1);
+(24, '潮流服饰', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'fashion1@test.com', 'MERCHANT', 1),
+(25, '数码专营', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'digital1@test.com', 'MERCHANT', 1),
+(26, '家居生活', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'home1@test.com', 'MERCHANT', 1),
+(27, '美妆护肤', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'beauty@test.com', 'MERCHANT', 1),
+(28, '运动户外', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'sports@test.com', 'MERCHANT', 1);
 
 -- ====================================================================
 -- 2. 创建用户账号（10个）
 -- ====================================================================
 INSERT INTO users (id, username, password_hash, email, role, status) VALUES
-(29, '张伟', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhangwei@test.com', 'CUSTOMER', 1),
-(30, '李娜', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'lina@test.com', 'CUSTOMER', 1),
-(31, '王强', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'wangqiang@test.com', 'CUSTOMER', 1),
-(32, '刘芳', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'liufang@test.com', 'CUSTOMER', 1),
-(33, '陈明', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'chenming@test.com', 'CUSTOMER', 1),
-(34, '杨静', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'yangjing@test.com', 'CUSTOMER', 1),
-(35, '赵磊', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhaolei@test.com', 'CUSTOMER', 1),
-(36, '孙丽', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'sunli@test.com', 'CUSTOMER', 1),
-(37, '周杰', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'zhoujie@test.com', 'CUSTOMER', 1),
-(38, '吴敏', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'wumin@test.com', 'CUSTOMER', 1);
+(29, '张伟', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'zhangwei@test.com', 'CUSTOMER', 1),
+(30, '李娜', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'lina@test.com', 'CUSTOMER', 1),
+(31, '王强', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'wangqiang@test.com', 'CUSTOMER', 1),
+(32, '刘芳', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'liufang@test.com', 'CUSTOMER', 1),
+(33, '陈明', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'chenming@test.com', 'CUSTOMER', 1),
+(34, '杨静', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'yangjing@test.com', 'CUSTOMER', 1),
+(35, '赵磊', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'zhaolei@test.com', 'CUSTOMER', 1),
+(36, '孙丽', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'sunli@test.com', 'CUSTOMER', 1),
+(37, '周杰', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'zhoujie@test.com', 'CUSTOMER', 1),
+(38, '吴敏', '$2a$10$0wDnKa67whphQX.Z4aaHBOiedA0mcezajKlPkuSKqDNoE9dsiOyi.', 'wumin@test.com', 'CUSTOMER', 1);
 
 -- ====================================================================
 -- 3. 创建商品（16款，价格正确）
