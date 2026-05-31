@@ -10,6 +10,7 @@ import com.javaweb.shop.service.CartService;
 import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.UserService;
 import com.javaweb.shop.service.ValidationException;
+import com.javaweb.shop.util.IpUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -68,7 +69,7 @@ public class LoginServlet extends HttpServlet {
             }
             request.getSession(true).setAttribute("currentUser", user);
             // 数据采集：记录登录日志
-            logService.logLogin(user.getId(), request.getRemoteAddr(), request.getHeader("User-Agent"));
+            logService.logLogin(user.getId(), IpUtil.getRealIp(request), request.getHeader("User-Agent"));
             if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 return;

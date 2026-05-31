@@ -6,6 +6,7 @@ import com.javaweb.shop.model.User;
 import com.javaweb.shop.service.AdminService;
 import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.ValidationException;
+import com.javaweb.shop.util.IpUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -64,19 +65,19 @@ public class AdminUserServlet extends HttpServlet {
                         request.getParameter("phone"),
                         request.getParameter("password"));
                 logService.logOperation(admin.getId(), admin.getRole(), "CREATE_MERCHANT",
-                        "创建销售人员ID=" + merchantId, request.getRemoteAddr());
+                        "创建销售人员ID=" + merchantId, IpUtil.getRealIp(request));
             } else if ("resetPassword".equals(action)) {
                 adminService.resetPassword(userId);
                 logService.logOperation(admin.getId(), admin.getRole(), "RESET_PASSWORD",
-                        "重置用户ID=" + userId + "的密码", request.getRemoteAddr());
+                        "重置用户ID=" + userId + "的密码", IpUtil.getRealIp(request));
             } else if ("toggleStatus".equals(action)) {
                 adminService.toggleStatus(userId);
                 logService.logOperation(admin.getId(), admin.getRole(), "TOGGLE_STATUS",
-                        "切换用户ID=" + userId + "的状态", request.getRemoteAddr());
+                        "切换用户ID=" + userId + "的状态", IpUtil.getRealIp(request));
             } else if ("deleteMerchant".equals(action)) {
                 adminService.deleteMerchant(userId);
                 logService.logOperation(admin.getId(), admin.getRole(), "DELETE_MERCHANT",
-                        "删除销售人员ID=" + userId, request.getRemoteAddr());
+                        "删除销售人员ID=" + userId, IpUtil.getRealIp(request));
             }
         } catch (ValidationException ex) {
             request.getSession().setAttribute("userManageError", ex.getMessage());

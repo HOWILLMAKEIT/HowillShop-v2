@@ -8,9 +8,9 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-// IP 地址转地域（基于 ip-api.com 免费接口，结果带缓存）
+// IP 地址转地域（基于百度 IP 定位接口，对国内 IP 定位准确）
 public class IpRegionService {
-    private static final String API_URL = "http://ip-api.com/json/";
+    private static final String API_URL = "https://opendata.baidu.com/api.php?resource_id=6006&oe=utf8&query=";
     private final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(3)).build();
     private final Map<String, String> cache = new ConcurrentHashMap<>();
@@ -26,16 +26,17 @@ public class IpRegionService {
     private String queryApi(String ip) {
         try {
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL + ip + "?fields=status,regionName,city&lang=zh-CN"))
+                    .uri(URI.create(API_URL + ip))
                     .timeout(Duration.ofSeconds(3)).GET().build();
             HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
             if (resp.statusCode() != 200) return null;
             String body = resp.body();
-            if (!body.contains("\"success\"")) return null;
-            String region = extractValue(body, "regionName");
-            String city = extractValue(body, "city");
-            if (region == null || region.isEmpty()) return null;
-            return (city == null || city.isEmpty()) ? region : region + city;
+            // 提取 location 字段，格式如："广东省深圳市 电信"
+            String location = extractValue(body, "location");
+            if (location == null || location.isEmpty()) return null;
+            // 去掉运营商后缀（空格后面的部分）
+            int spaceIdx = location.indexOf(' ');
+            return spaceIdx > 0 ? location.substring(0, spaceIdx) : location;
         } catch (Exception e) {
             return null;
         }

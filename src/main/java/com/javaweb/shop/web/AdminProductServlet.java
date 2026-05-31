@@ -9,6 +9,7 @@ import com.javaweb.shop.model.User;
 import com.javaweb.shop.service.LogService;
 import com.javaweb.shop.service.OssService;
 import com.javaweb.shop.service.ValidationException;
+import com.javaweb.shop.util.IpUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -103,7 +104,7 @@ public class AdminProductServlet extends HttpServlet {
                         deleteImageIfPresent(existing.get().getImageUrl());
                     }
                     logService.logOperation(merchant.getId(), merchant.getRole(), "DELETE_PRODUCT",
-                            "删除商品ID=" + productId, request.getRemoteAddr());
+                            "删除商品ID=" + productId, IpUtil.getRealIp(request));
                     request.getSession().setAttribute("adminProductMessage", "商品已删除。");
                 }
             } else {
@@ -127,7 +128,7 @@ public class AdminProductServlet extends HttpServlet {
                             deleteImageIfPresent(request.getParameter("currentImageUrl"));
                         }
                         logService.logOperation(merchant.getId(), merchant.getRole(), "UPDATE_PRODUCT",
-                                "更新商品: " + product.getName(), request.getRemoteAddr());
+                                "更新商品: " + product.getName(), IpUtil.getRealIp(request));
                         request.getSession().setAttribute("adminProductMessage", "商品已更新。");
                     }
                 } else {
@@ -135,7 +136,7 @@ public class AdminProductServlet extends HttpServlet {
                     product.setMerchantId(merchant.getId());
                     productDao.insertProduct(product);
                     logService.logOperation(merchant.getId(), merchant.getRole(), "ADD_PRODUCT",
-                            "新增商品: " + product.getName(), request.getRemoteAddr());
+                            "新增商品: " + product.getName(), IpUtil.getRealIp(request));
                     request.getSession().setAttribute("adminProductMessage", "商品已新增。");
                 }
             }

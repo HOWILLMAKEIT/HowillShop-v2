@@ -5,6 +5,7 @@ import com.javaweb.shop.infra.db.DataSourceFactory;
 import com.javaweb.shop.model.Category;
 import com.javaweb.shop.model.User;
 import com.javaweb.shop.service.LogService;
+import com.javaweb.shop.util.IpUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -61,14 +62,14 @@ public class CategoryManageServlet extends HttpServlet {
                     request.getSession().setAttribute("categoryError", "分类名称不能为空。");
                 } else {
                     categoryDao.insertCategory(name, sortOrder);
-                    logService.logOperation(user.getId(), user.getRole(), "ADD_CATEGORY", "添加分类: " + name, request.getRemoteAddr());
+                    logService.logOperation(user.getId(), user.getRole(), "ADD_CATEGORY", "添加分类: " + name, IpUtil.getRealIp(request));
                     request.getSession().setAttribute("categoryMessage", "分类已添加。");
                 }
             } else if ("delete".equals(action)) {
                 long id = parseLong(request.getParameter("categoryId"));
                 boolean deleted = categoryDao.deleteCategory(id);
                 if (deleted) {
-                    logService.logOperation(user.getId(), user.getRole(), "DELETE_CATEGORY", "删除分类ID: " + id, request.getRemoteAddr());
+                    logService.logOperation(user.getId(), user.getRole(), "DELETE_CATEGORY", "删除分类ID: " + id, IpUtil.getRealIp(request));
                     request.getSession().setAttribute("categoryMessage", "分类已删除。");
                 } else {
                     request.getSession().setAttribute("categoryError", "删除失败，该分类下可能仍有商品。");
@@ -76,7 +77,7 @@ public class CategoryManageServlet extends HttpServlet {
             } else if ("toggle".equals(action)) {
                 long id = parseLong(request.getParameter("categoryId"));
                 categoryDao.toggleStatus(id);
-                logService.logOperation(user.getId(), user.getRole(), "TOGGLE_CATEGORY", "切换分类状态ID: " + id, request.getRemoteAddr());
+                logService.logOperation(user.getId(), user.getRole(), "TOGGLE_CATEGORY", "切换分类状态ID: " + id, IpUtil.getRealIp(request));
                 request.getSession().setAttribute("categoryMessage", "分类状态已更新。");
             }
         } catch (SQLException ex) {

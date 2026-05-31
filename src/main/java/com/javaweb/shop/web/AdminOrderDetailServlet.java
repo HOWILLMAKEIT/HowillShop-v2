@@ -11,6 +11,7 @@ import com.javaweb.shop.service.MailService;
 import com.javaweb.shop.service.OrderService;
 import com.javaweb.shop.service.ShippingService;
 import com.javaweb.shop.service.ValidationException;
+import com.javaweb.shop.util.IpUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -91,7 +92,7 @@ public class AdminOrderDetailServlet extends HttpServlet {
             if ("ship".equalsIgnoreCase(action)) {
                 shippingService.shipOrder(orderId, merchant.getId());
                 logService.logOperation(merchant.getId(), merchant.getRole(), "SHIP_ORDER",
-                        "发货订单ID=" + orderId, request.getRemoteAddr());
+                        "发货订单ID=" + orderId, IpUtil.getRealIp(request));
                 request.getSession().setAttribute("adminOrderMessage", "订单已标记为已发货。");
             } else {
                 request.getSession().setAttribute("adminOrderError", "不支持的操作。");
