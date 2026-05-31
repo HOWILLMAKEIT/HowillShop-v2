@@ -46,7 +46,7 @@
 
 ## 功能特性
 
-### 版本一（基础电商）
+### [版本一（基础电商）](https://github.com/HOWILLMAKEIT/HowillSHOP)
 
 - 用户/商家注册、登录、注销（BCrypt 加密）
 - 商品展示、分类筛选、关键词搜索、分页
@@ -128,7 +128,7 @@ mysql -u root -p javaweb_shop < db/test_data_fixed.sql
 
 ### 5) 打包部署
 
-详见实验报告中的服务器部署文档。
+详见 [部署指南](部署指南.md)。
 
 ### 6) 自动化测试
 
@@ -139,7 +139,7 @@ pip install requests beautifulsoup4 pymysql
 python test_checklist.py
 ```
 
-详见 [自动化测试说明](docs/版本二的docs/自动化测试说明.md)。
+详见 [自动化测试说明](自动化测试说明.md)。
 
 ## 测试账号
 
@@ -188,7 +188,7 @@ src/main/webapp/                 # JSP 页面 + 静态资源 + WEB-INF
 
 | 版本 | 内容 |
 |------|------|
-| **v1.0** | 基础电商：注册登录、商品浏览、购物车、模拟支付、多商家拆单、发货邮件、销售统计 |
+| **v1.0** | 基础电商：注册登录、商品浏览、购物车、模拟支付、多商家拆单、发货邮件、销售统计 — [GitHub](https://github.com/HOWILLMAKEIT/HowillSHOP) |
 | **v2.0** | 追加数据采集（4 类日志）、Admin 管理后台、ECharts 数据分析与可视化、双引擎推荐系统 |
 
 ## License
