@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <b>在线演示</b>：见 [部署指南](部署指南.md)
+  <b>在线演示</b>：见 <a href="部署指南.md">部署指南</a>
 </p>
 
 ---
@@ -119,18 +119,21 @@ mysql -u root -p javaweb_shop < db/migration_v2.sql
 mysql -u root -p javaweb_shop < db/test_data_fixed.sql
 ```
 
-**3. 配置数据库连接**
+**3. 配置环境变量**
 
-在项目根目录创建 `.env` 文件，至少配置数据库连接：
+复制 `.env.example` 并填入实际值：
 
 ```bash
-DB_DRIVER=com.mysql.cj.jdbc.Driver
-DB_URL=jdbc:mysql://localhost:3306/javaweb_shop?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
-DB_USERNAME=root
-DB_PASSWORD=你的数据库密码
+cp .env.example .env
 ```
 
-邮件（QQ 邮箱 SMTP）和阿里云 OSS 为可选配置，不配置不影响核心功能运行。
+| 配置项 | 说明 |
+|--------|------|
+| `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` | MySQL 连接地址、用户名、密码 |
+| `DB_POOL_*` | HikariCP 连接池参数（一般无需修改） |
+| `MAIL_SMTP_HOST` / `MAIL_USERNAME` / `MAIL_PASSWORD` / `MAIL_FROM` | QQ 邮箱 SMTP 发送发货通知和支付确认邮件 |
+| `OSS_ENDPOINT` / `OSS_BUCKET` / `OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET` | 阿里云 OSS 商品图片存储与签名 URL |
+| `OSS_BASE_URL` / `OSS_PREFIX` / `OSS_SIGN_EXPIRE_SECONDS` | OSS 访问域名、存储目录前缀、签名过期时间 |
 
 **4. 配置 Tomcat 热重载**
 
@@ -166,7 +169,7 @@ startup.bat  # Windows
 
 ### 自动化测试
 
-项目提供覆盖 63 项功能的自动化测试脚本，详见 [自动化测试说明](自动化测试说明.md)。
+项目提供覆盖 72 项功能的自动化测试脚本，详见 [自动化测试说明](自动化测试说明.md)。
 
 ```bash
 pip install requests beautifulsoup4 pymysql
