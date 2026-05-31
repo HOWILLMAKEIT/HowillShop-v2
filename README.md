@@ -31,7 +31,7 @@
 </p>
 
 <p align="center">
-  <b>在线演示</b>：见实验报告
+  <b>在线演示</b>：见 [部署指南](部署指南.md)
 </p>
 
 ---
@@ -102,14 +102,15 @@
 
 ## 快速开始
 
-### 1) 环境准备
+### 本地开发
 
-- JDK 11
-- Maven 3.9+
-- Tomcat 9
-- MySQL 8
+**1. 环境准备**
 
-### 2) 初始化数据库
+JDK 11、Maven 3.9+、Tomcat 9、MySQL 8。
+
+**2. 初始化数据库**
+
+按顺序执行 `db/` 目录下的 SQL 脚本：
 
 ```bash
 mysql -u root -p < db/schema.sql
@@ -118,28 +119,59 @@ mysql -u root -p javaweb_shop < db/migration_v2.sql
 mysql -u root -p javaweb_shop < db/test_data_fixed.sql
 ```
 
-### 3) 配置 .env
+**3. 配置数据库连接**
 
-在项目根目录创建 `.env`，覆盖默认的 `db.properties` / `mail.properties` / `oss.properties`，详见实验报告。
+在项目根目录创建 `.env` 文件，至少配置数据库连接：
 
-### 4) 开发模式（Tomcat 热重载）
+```bash
+DB_DRIVER=com.mysql.cj.jdbc.Driver
+DB_URL=jdbc:mysql://localhost:3306/javaweb_shop?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
+DB_USERNAME=root
+DB_PASSWORD=你的数据库密码
+```
 
-详见实验报告中的开发环境配置章节。
+邮件（QQ 邮箱 SMTP）和阿里云 OSS 为可选配置，不配置不影响核心功能运行。
 
-### 5) 打包部署
+**4. 配置 Tomcat 热重载**
 
-详见 [部署指南](部署指南.md)。
+在 `$CATALINA_HOME/conf/Catalina/localhost/shop.xml` 中创建 Context，让 Tomcat 直接读取 Maven 编译输出，免去打包步骤：
 
-### 6) 自动化测试
+```xml
+<Context docBase="/你的项目路径/src/main/webapp" reloadable="true">
+  <Resources className="org.apache.catalina.webresources.StandardRoot">
+    <PreResources className="org.apache.catalina.webresources.DirResourceSet"
+                  base="/你的项目路径/target/classes"
+                  webAppMount="/WEB-INF/classes" />
+    <PreResources className="org.apache.catalina.webresources.DirResourceSet"
+                  base="/你的项目路径/target/dependency"
+                  webAppMount="/WEB-INF/lib" />
+  </Resources>
+</Context>
+```
 
-项目提供 AI 辅助生成的自动化测试脚本，覆盖 63 项功能检查：
+**5. 编译并启动**
+
+```bash
+mvn -DskipTests compile
+mvn -DskipTests dependency:copy-dependencies -DoutputDirectory=target/dependency
+startup.sh   # macOS/Linux
+startup.bat  # Windows
+```
+
+访问 `http://localhost:8080/shop/`。改 Java 代码后执行 `mvn compile` 即可热更新，改 JSP 直接刷新浏览器。
+
+### 服务器部署
+
+打包并部署到服务器（Tomcat + Nginx）的完整步骤见 [部署指南](部署指南.md)。
+
+### 自动化测试
+
+项目提供覆盖 63 项功能的自动化测试脚本，详见 [自动化测试说明](自动化测试说明.md)。
 
 ```bash
 pip install requests beautifulsoup4 pymysql
 python test_checklist.py
 ```
-
-详见 [自动化测试说明](自动化测试说明.md)。
 
 ## 测试账号
 
